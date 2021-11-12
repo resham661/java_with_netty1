@@ -1,5 +1,4 @@
 //ChannelHandlers and business logic
-
 package java_with_gradle_netty;
 
 import io.netty.buffer.ByteBuf;
@@ -17,21 +16,20 @@ public class HelloServerHandler extends ChannelInboundHandlerAdapter {
 	        ByteBuf inBuffer = (ByteBuf) msg;
 
 	        String received = inBuffer.toString(CharsetUtil.UTF_8);
-	        System.out.println("Server received: " + received);
-
+	        System.out.println("Server received: " + received); //Logs the method to the console
 	        ctx.write(Unpooled.copiedBuffer("Hello " + received, CharsetUtil.UTF_8));
+	        //ctx.write(inBuffer);
 	    }
 
 	    @Override
 	    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-	        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
+	        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)			//Flush the pending message to the remote peer and closes the channel
 	                .addListener(ChannelFutureListener.CLOSE);
 	    }
 
 	    @Override
 	    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-	        cause.printStackTrace();
-	        ctx.close();
+	        cause.printStackTrace();		//Prints the exception stack trace
+	        ctx.close();					//close the channel
 	    }
-
 }

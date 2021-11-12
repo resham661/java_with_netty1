@@ -1,5 +1,4 @@
 //Bootstrapping the server
-
 package java_with_gradle_netty;
 
 import java.net.InetSocketAddress;
@@ -13,31 +12,30 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class server {
-	public static void main(String args[]){
+	
+	public static void main(String args[]) throws Exception {
+		
 		EventLoopGroup group = new NioEventLoopGroup();
+		
 		try{
-		    ServerBootstrap serverBootstrap = new ServerBootstrap();
-		    serverBootstrap.group(group);
-		    serverBootstrap.channel(NioServerSocketChannel.class);
-		    serverBootstrap.localAddress(new InetSocketAddress("localhost", 9999));
+		    ServerBootstrap bootstrap = new ServerBootstrap();
+		    bootstrap.group(group);
+		    bootstrap.channel(NioServerSocketChannel.class);						//Specifies the use of an NIO transport channel
+		    bootstrap.localAddress(new InetSocketAddress("localhost",9900));		//sets the socket address
 
-		    serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+		    bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {			//Adds an HelloServerHandler to the channel's ChannelPipeline
 		        protected void initChannel(SocketChannel socketChannel) throws Exception {
 		            socketChannel.pipeline().addLast(new HelloServerHandler());
 		        }
-		    });
-		    ChannelFuture channelFuture = serverBootstrap.bind().sync();
-		    channelFuture.channel().closeFuture().sync();
+		    });			
+		    ChannelFuture channelFuture = bootstrap.bind().sync();		//Binds the server asynchronously; sync() wait for the bind to complete
+		    channelFuture.channel().closeFuture().sync();				//Gets the CloseFuture of the channel and blocks the current thread until it's complete
 		} catch(Exception e){
 		    e.printStackTrace();
 		} 
 		finally {
-		    try {
-				group.shutdownGracefully().sync();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				group.shutdownGracefully().sync();				//releasing all the resources
 		}
 	}
 }
+

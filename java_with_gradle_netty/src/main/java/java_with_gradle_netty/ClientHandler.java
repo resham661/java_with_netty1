@@ -12,12 +12,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     public void channelActive(ChannelHandlerContext channelHandlerContext){
-        channelHandlerContext.writeAndFlush(Unpooled.copiedBuffer("Netty Rocks!", CharsetUtil.UTF_8));
+        channelHandlerContext.writeAndFlush(Unpooled.copiedBuffer("Netty Rocks!", CharsetUtil.UTF_8));	//When notified that channel is active, send a msg
     }
 
     @Override
     public void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf in) {
-        System.out.println("Client received: " + in.toString(CharsetUtil.UTF_8));
+        System.out.println("Client received: " + in.toString(CharsetUtil.UTF_8));		//Logs a dump of the receive message
     }
 
     @Override
